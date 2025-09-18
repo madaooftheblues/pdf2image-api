@@ -102,12 +102,16 @@ async def convert_pdf_to_images(
             raise HTTPException(status_code=413, detail="File too large. Maximum size: 50MB")
         
         # Convert PDF to images
-        images = convert_from_bytes(
-            content,
-            dpi=dpi,
-            fmt=format.lower(),
-            jpeg_quality=quality if format in ["JPEG", "JPG"] else None
-        )
+        convert_params = {
+            'dpi': dpi,
+            'fmt': format.lower()
+        }
+        
+        # Only add jpeg_quality for JPEG format
+        if format in ["JPEG", "JPG"] and quality is not None:
+            convert_params['jpeg_quality'] = quality
+            
+        images = convert_from_bytes(content, **convert_params)
         
         if not images:
             raise HTTPException(status_code=400, detail="No pages found in PDF")
