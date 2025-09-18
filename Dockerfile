@@ -24,6 +24,9 @@ RUN useradd --create-home --shell /bin/bash app
 RUN chown -R app:app /app
 USER app
 
+# Set default environment variables
+ENV API_KEY=your-secret-api-key-here
+
 # Expose port
 EXPOSE 8473
 

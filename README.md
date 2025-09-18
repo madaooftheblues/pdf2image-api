@@ -8,6 +8,7 @@ A lightweight API endpoint for converting PDF files to images using Python's pdf
 - 📄 **PDF to Image Conversion** - Convert PDFs to PNG, JPEG, WEBP formats
 - 🎯 **High DPI Support** - Configurable DPI up to 600
 - 📦 **Auto ZIP** - Multi-page PDFs are automatically zipped
+- 🔐 **API Key Authentication** - Secure your endpoint with API keys
 - 🐳 **Docker Ready** - Easy deployment with Docker
 - ☁️ **Serverless Support** - AWS Lambda compatible
 - 🔒 **Input Validation** - File type, size, and parameter validation
@@ -22,12 +23,22 @@ A lightweight API endpoint for converting PDF files to images using Python's pdf
    pip install -r requirements.txt
    ```
 
-2. **Run the server:**
+2. **Set your API key:**
+   ```bash
+   # Option 1: Environment variable
+   export API_KEY="your-secret-api-key-here"
+   
+   # Option 2: Create .env file (copy from env.example)
+   cp env.example .env
+   # Edit .env with your API key
+   ```
+
+3. **Run the server:**
    ```bash
    python main.py
    ```
 
-3. **Access the API:**
+4. **Access the API:**
    - API: http://localhost:8473
    - Docs: http://localhost:8473/docs
    - Health: http://localhost:8473/health
@@ -69,14 +80,22 @@ A lightweight API endpoint for converting PDF files to images using Python's pdf
 ```bash
 # Convert to PNG with default settings
 curl -X POST "http://localhost:8473/convert" \
+  -H "Authorization: Bearer your-secret-api-key-here" \
   -F "file=@document.pdf"
 
 # Convert to JPEG with custom DPI and quality
 curl -X POST "http://localhost:8473/convert" \
+  -H "Authorization: Bearer your-secret-api-key-here" \
   -F "file=@document.pdf" \
   -F "format=JPEG" \
   -F "dpi=600" \
   -F "quality=95"
+```
+
+**Authentication:**
+All requests to `/convert` require an API key in the Authorization header:
+```
+Authorization: Bearer your-secret-api-key-here
 ```
 
 ## Deployment Options
@@ -88,7 +107,8 @@ curl -X POST "http://localhost:8473/convert" \
    - Create new project
    - Connect your Git repository
    - Select Docker deployment
-   - Set environment variables if needed
+   - **Set environment variables:**
+     - `API_KEY` = Your secure API key (generate a strong random key)
    - Deploy!
 
 ### 2. AWS Lambda (Serverless)
@@ -125,6 +145,7 @@ curl -X POST "http://localhost:8473/convert" \
 
 ### Environment Variables
 
+- `API_KEY` - **Required** - Your secure API key for authentication
 - `PYTHONUNBUFFERED=1` - Enable Python output buffering
 - `MAX_FILE_SIZE` - Maximum file size (default: 50MB)
 
@@ -171,6 +192,7 @@ pdf2image-api/
 ```bash
 # Test with a sample PDF
 curl -X POST "http://localhost:8473/convert" \
+  -H "Authorization: Bearer your-secret-api-key-here" \
   -F "file=@sample.pdf" \
   -F "format=PNG" \
   -F "dpi=300"

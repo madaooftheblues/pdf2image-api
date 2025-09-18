@@ -4,8 +4,9 @@ import zipfile
 from io import BytesIO
 from typing import Optional
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, HTTPException, UploadFile, Header, Depends
 from fastapi.responses import StreamingResponse
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pdf2image import convert_from_bytes
 from PIL import Image
 
@@ -19,6 +20,19 @@ app = FastAPI(
 DEFAULT_DPI = 300
 SUPPORTED_FORMATS = ["PNG", "JPEG", "JPG", "WEBP"]
 MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
+
+# Security
+API_KEY = os.getenv("API_KEY", "your-secret-api-key-here")
+security = HTTPBearer()
+
+def verify_api_key(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Verify the API key from Authorization header"""
+    if credentials.credentials != API_KEY:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid API key. Please provide a valid API key in the Authorization header."
+        )
+    return credentials.credentials
 
 
 @app.get("/")
@@ -41,7 +55,8 @@ async def convert_pdf_to_images(
     file: UploadFile = File(...),
     format: str = "PNG",
     dpi: int = DEFAULT_DPI,
-    quality: Optional[int] = None
+    quality: Optional[int] = None,
+    api_key: str = Depends(verify_api_key)
 ):
     """
     Convert PDF to images.
@@ -51,6 +66,7 @@ async def convert_pdf_to_images(
         format: Output image format (PNG, JPEG, JPG, WEBP)
         dpi: DPI for image conversion (default: 300)
         quality: JPEG quality (1-100, only for JPEG format)
+        api_key: Valid API key (required for authentication)
     
     Returns:
         Single image file or ZIP file containing multiple images
