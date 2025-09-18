@@ -1,0 +1,35 @@
+service: pdf2image-api
+
+provider:
+  name: aws
+  runtime: python3.11
+  region: us-east-1
+  timeout: 30
+  memorySize: 1024
+  environment:
+    PYTHONUNBUFFERED: 1
+
+functions:
+  api:
+    handler: main.handler
+    events:
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors: true
+      - http:
+          path: /
+          method: ANY
+          cors: true
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    dockerizePip: true
+    slim: true
+    strip: false
+    noDeps:
+      - boto3
+      - botocore
