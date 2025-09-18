@@ -28,9 +28,9 @@ A lightweight API endpoint for converting PDF files to images using Python's pdf
    ```
 
 3. **Access the API:**
-   - API: http://localhost:8000
-   - Docs: http://localhost:8000/docs
-   - Health: http://localhost:8000/health
+   - API: http://localhost:8473
+   - Docs: http://localhost:8473/docs
+   - Health: http://localhost:8473/health
 
 ### Docker Deployment
 
@@ -41,7 +41,7 @@ A lightweight API endpoint for converting PDF files to images using Python's pdf
 
 2. **Run with Docker:**
    ```bash
-   docker run -p 8000:8000 pdf2image-api
+   docker run -p 8473:8473 pdf2image-api
    ```
 
 3. **Or use Docker Compose:**
@@ -68,11 +68,11 @@ A lightweight API endpoint for converting PDF files to images using Python's pdf
 **Example using curl:**
 ```bash
 # Convert to PNG with default settings
-curl -X POST "http://localhost:8000/convert" \
+curl -X POST "http://localhost:8473/convert" \
   -F "file=@document.pdf"
 
 # Convert to JPEG with custom DPI and quality
-curl -X POST "http://localhost:8000/convert" \
+curl -X POST "http://localhost:8473/convert" \
   -F "file=@document.pdf" \
   -F "format=JPEG" \
   -F "dpi=600" \
@@ -118,7 +118,7 @@ curl -X POST "http://localhost:8000/convert" \
 
 2. **Deploy with Docker:**
    ```bash
-   docker run -d -p 8000:8000 --name pdf2image-api pdf2image-api
+   docker run -d -p 8473:8473 --name pdf2image-api pdf2image-api
    ```
 
 ## Configuration
@@ -140,8 +140,8 @@ The Dockerfile includes:
 ## API Documentation
 
 Once running, visit:
-- **Swagger UI:** http://localhost:8000/docs
-- **ReDoc:** http://localhost:8000/redoc
+- **Swagger UI:** http://localhost:8473/docs
+- **ReDoc:** http://localhost:8473/redoc
 
 ## Limitations
 
@@ -170,7 +170,7 @@ pdf2image-api/
 
 ```bash
 # Test with a sample PDF
-curl -X POST "http://localhost:8000/convert" \
+curl -X POST "http://localhost:8473/convert" \
   -F "file=@sample.pdf" \
   -F "format=PNG" \
   -F "dpi=300"
